@@ -1,0 +1,63 @@
+name: Check H5P library version
+description: Comments whether or not the library version was updated in the current PR
+
+inputs:
+  cancel-label:
+    description: Name of the label that blocks messages from being sent
+    default: non-functional
+    required: false
+
+runs:
+  using: composite
+
+  steps:
+    - name: Find current PR number
+      uses: jwalton/gh-find-current-pr@v1 # https://github.com/jwalton/gh-find-current-pr
+      id: find-pr-number
+
+    - name: Find comment
+      uses: peter-evans/find-comment@v1 # https://github.com/peter-evans/find-comment
+      id: find-comment
+      with:
+        issue-number: ${{ steps.find-pr-number.outputs.number }}
+        comment-author: github-actions[bot]
+        body-includes: <!-- h5p-library-check -->
+
+    - name: Delete comment
+      uses: sandeshjangam/comment-actions@v1 # https://github.com/sandeshjangam/comment-actions
+      if: steps.find-comment.outputs.comment-id != ''
+      with:
+        type: delete
+        comment_id: ${{ steps.find-comment.outputs.comment-id }}
+
+    - name: PR has `${{ inputs.cancel-label || 'non-functional' }}` label
+      uses: Dreamcodeio/pr-has-label-action@master # https://github.com/Dreamcodeio/does-pr-has-label
+      id: check-label
+      with:
+        label: ${{ inputs.cancel-label || 'non-functional' }}
+
+    - name: Check if library is updated
+      if: steps.check-label.outputs.hasLabel == false
+      uses: boyum/is-h5p-library-updated-action@v1
+      id: h5p-version-check
+
+    - name: "Create comment: Version change missing"
+      uses: peter-evans/create-or-update-comment@v1 # https://github.com/peter-evans/create-or-update-comment
+      if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead == 'false'
+      with:
+        issue-number: ${{ steps.find-pr-number.outputs.number }}
+        body: |
+          :warning: The library version was not updated.
+          Add the label `${{ inputs.cancel-label || 'non-functional' }}` if this PR does not require a change of version numbers.
+
+          **Current version:** ${{ steps.h5p-version-check.outputs.current-version-formatted }}
+          **Main version:** ${{ steps.h5p-version-check.outputs.main-version-formatted }}
+          <!-- h5p-library-check -->
+    - name: "Create comment: Version changed"
+      uses: peter-evans/create-or-update-comment@v1 # https://github.com/peter-evans/create-or-update-comment
+      if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead != 'false'
+      with:
+        issue-number: ${{ steps.find-pr-number.outputs.number }}
+        body: |
+          :tada: The library version was updated from **${{ steps.h5p-version-check.outputs.main-version-formatted }}** to **${{ steps.h5p-version-check.outputs.current-version-formatted }}**.
+          <!-- h5p-library-check -->
