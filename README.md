@@ -3,7 +3,7 @@ Comments whether or not the H5P library version was updated
 
 ## Usage
 
-This action needs to be triggered by pull_request, something like this:
+This action needs to be triggered by `pull_request`, something like this:
 
 ```yml
 on:
