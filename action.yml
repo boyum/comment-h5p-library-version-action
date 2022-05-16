@@ -6,6 +6,10 @@ inputs:
     description: Name of the label that blocks messages from being sent
     default: non-functional
     required: false
+  working-directory:
+    description: Path to the working directory
+    required: false
+    default: ./
 
 runs:
   using: composite
@@ -40,6 +44,8 @@ runs:
       if: steps.check-label.outputs.hasLabel == false
       uses: boyum/is-h5p-library-updated-action@v1
       id: h5p-version-check
+      with:
+        working-directory: ${{ inputs.working-directory }}
 
     - name: "Create comment: Version change missing"
       uses: peter-evans/create-or-update-comment@v1 # https://github.com/peter-evans/create-or-update-comment
