@@ -30,7 +30,7 @@ jobs:
 | Name | Description | Default value | Required |
 |---|---|---|---|
 | `cancel-label` | Name of the label that blocks messages from being sent. | `non-functional` | false |
-
+| `working-directory` | The directory where the library.json file is located, relative to the Git project.|  `.`     | false    |
 ## Development
 
 ### Releasing
