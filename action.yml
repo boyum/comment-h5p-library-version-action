@@ -91,11 +91,11 @@ runs:
         script: |
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
-          const cancelLabel = `${{ inputs.cancel-label//\n/\\n }}`;
+          const cancelLabel = `${{ inputs.cancel-label//a/b }}`;
 
-          let message = `${{ inputs.version-not-changed-message//\n/\\n }}`;
+          let message = `${{ inputs.version-not-changed-message//a/b }}`;
           message.replaceAll("%OLD_VERSION%", oldVersion);
-          message.replaceAll("%NEW_VERSION%", oldVersion);
+          message.replaceAll("%NEW_VERSION%", newVersion);
           message.replaceAll("%CANCEL_LABEL%", cancelLabel);
 
           return message;
@@ -117,9 +117,9 @@ runs:
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
 
-          let message = `${{ inputs.version-changed-message//\n/\\n }}`;
+          let message = `${{ inputs.version-changed-message//a/b }}`;
           message.replaceAll("%OLD_VERSION%", oldVersion);
-          message.replaceAll("%NEW_VERSION%", oldVersion);
+          message.replaceAll("%NEW_VERSION%", newVersion);
 
           return message;
 
