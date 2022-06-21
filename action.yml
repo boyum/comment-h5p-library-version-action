@@ -38,7 +38,7 @@ inputs:
     required: false
     default: |
       :warning: The library version was not updated.
-      Add the label `%CANCEL_LABEL%` if this PR does not require a change of version numbers.
+      Add the label \`%CANCEL_LABEL%\` if this PR does not require a change of version numbers.
 
       **Current version:** %NEW_VERSION%
       **Main version:** %OLD_VERSION%
@@ -91,9 +91,9 @@ runs:
         script: |
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
-          const cancelLabel = `${ inputs.cancel-label//`/\` }`;
+          const cancelLabel = `${{ inputs.cancel-label }}`;
 
-          let message = `${ inputs.version-not-changed-message//`/\` }`;
+          let message = `${{ inputs.version-not-changed-message }}`;
           message.replaceAll("%OLD_VERSION%", oldVersion);
           message.replaceAll("%NEW_VERSION%", newVersion);
           message.replaceAll("%CANCEL_LABEL%", cancelLabel);
@@ -117,7 +117,7 @@ runs:
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
 
-          let message = `${ inputs.version-changed-message//`/\` }`;
+          let message = `${{ inputs.version-changed-message }}`;
           message.replaceAll("%OLD_VERSION%", oldVersion);
           message.replaceAll("%NEW_VERSION%", newVersion);
 
