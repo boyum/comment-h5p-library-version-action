@@ -1,4 +1,5 @@
 name: Check H5P library version
+
 description: Comments whether or not the library version was updated in the current PR
 
 inputs:
@@ -6,10 +7,42 @@ inputs:
     description: Name of the label that blocks messages from being sent
     default: non-functional
     required: false
+
   working-directory:
     description: Path to the working directory
     required: false
     default: ./
+
+  version-changed-message:
+    description: |
+      Message shown when the version number was changed. These special words will be replaced:
+
+      - `%OLD_VERSION%` — The project's version in the main branch
+      - `%NEW_VERSION%` — The project's version in the current PR
+
+    required: false
+    default: ":tada: The library version was updated from **%OLD_VERSION%** to **%NEW_VERSION%**."
+
+  version-not-changed-message:
+    description: |
+      Message shown when the version number was changed. These special words will be replaced:
+
+      - `%OLD_VERSION%`  — The project's version in the main branch
+      - `%NEW_VERSION%`  — The project's version in the current PR
+      - `%CANCEL_LABEL%` — The cancel label
+
+    required: false
+    default: |
+      :warning: The library version was not updated.
+      Add the label `%CANCEL_LABEL%` if this PR does not require a change of version numbers.
+
+      **Current version:** %NEW_VERSION%
+      **Main version:** %OLD_VERSION%
+
+  project-id:
+    description: An unique identifier used to distinguish between H5P projects in a monorepo. Only required in repositories with more than one H5P project.
+    required: false
+    default: "1"
 
 runs:
   using: composite
@@ -25,7 +58,7 @@ runs:
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number }}
         comment-author: github-actions[bot]
-        body-includes: <!-- h5p-library-check -->
+        body-includes: <!-- h5p-library-check-${{inputs.project-id}} -->
 
     - name: Delete comment
       uses: sandeshjangam/comment-actions@v1 # https://github.com/sandeshjangam/comment-actions
@@ -34,11 +67,11 @@ runs:
         type: delete
         comment_id: ${{ steps.find-comment.outputs.comment-id }}
 
-    - name: PR has `${{ inputs.cancel-label || 'non-functional' }}` label
+    - name: PR has `${{ inputs.cancel-label }}` label
       uses: Dreamcodeio/pr-has-label-action@master # https://github.com/Dreamcodeio/does-pr-has-label
       id: check-label
       with:
-        label: ${{ inputs.cancel-label || 'non-functional' }}
+        label: ${{ inputs.cancel-label }}
 
     - name: Check if library is updated
       if: steps.check-label.outputs.hasLabel == false
@@ -47,23 +80,50 @@ runs:
       with:
         working-directory: ${{ inputs.working-directory }}
 
+    - name: Format failure message
+      id: format-success-message
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
+          const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
+          const cancelLabel = "${{ inputs.cancel-label }}";
+
+          let message = "${{inputs.version-not-changed-message}}";
+          message.replaceAll("%OLD_VERSION%", oldVersion);
+          message.replaceAll("%NEW_VERSION%", oldVersion);
+          message.replaceAll("%CANCEL_LABEL%", cancelLabel);
+
+          return message;
+
     - name: "Create comment: Version change missing"
       uses: peter-evans/create-or-update-comment@v2 # https://github.com/peter-evans/create-or-update-comment
       if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead == 'false'
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number }}
         body: |
-          :warning: The library version was not updated.
-          Add the label `${{ inputs.cancel-label || 'non-functional' }}` if this PR does not require a change of version numbers.
+          ${{ steps.format-failure-message.outputs.result }}
+          <!-- h5p-library-check-${{inputs.project-id}} -->
 
-          **Current version:** ${{ steps.h5p-version-check.outputs.current-version-formatted }}
-          **Main version:** ${{ steps.h5p-version-check.outputs.main-version-formatted }}
-          <!-- h5p-library-check -->
+    - name: Format success message
+      id: format-success-message
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
+          const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
+
+          let message = "${{ inputs.version-changed-message }}";
+          message.replaceAll("%OLD_VERSION%", oldVersion);
+          message.replaceAll("%NEW_VERSION%", oldVersion);
+
+          return message;
+
     - name: "Create comment: Version changed"
       uses: peter-evans/create-or-update-comment@v2 # https://github.com/peter-evans/create-or-update-comment
       if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead != 'false'
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number }}
         body: |
-          :tada: The library version was updated from **${{ steps.h5p-version-check.outputs.main-version-formatted }}** to **${{ steps.h5p-version-check.outputs.current-version-formatted }}**.
-          <!-- h5p-library-check -->
+          ${{ steps.format-success-message.outputs.result }}
+          <!-- h5p-library-check-${{inputs.project-id}} -->
