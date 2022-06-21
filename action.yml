@@ -2,6 +2,10 @@ name: Check H5P library version
 
 description: Comments whether or not the library version was updated in the current PR
 
+branding:
+  icon: settings
+  color: blue
+
 inputs:
   cancel-label:
     description: Name of the label that blocks messages from being sent
