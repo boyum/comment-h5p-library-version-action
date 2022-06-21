@@ -88,6 +88,7 @@ runs:
       id: format-failure-message
       uses: actions/github-script@v6
       with:
+        result-encoding: string
         script: |
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
@@ -113,6 +114,7 @@ runs:
       id: format-success-message
       uses: actions/github-script@v6
       with:
+        result-encoding: string
         script: |
           const oldVersion = "${{ steps.h5p-version-check.outputs.main-version-formatted }}";
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
