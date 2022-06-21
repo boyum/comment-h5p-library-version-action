@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Test
-        uses: "."
+        uses: ./
         with:
           working-directory: demo
 
