@@ -85,7 +85,7 @@ runs:
         working-directory: ${{ inputs.working-directory }}
 
     - name: Format failure message
-      id: format-success-message
+      id: format-failure-message
       uses: actions/github-script@v6
       with:
         script: |
