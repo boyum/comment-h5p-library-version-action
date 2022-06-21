@@ -95,9 +95,9 @@ runs:
           const cancelLabel = `${{ inputs.cancel-label }}`;
 
           let message = `${{ inputs.version-not-changed-message }}`;
-          message.replaceAll("%OLD_VERSION%", oldVersion);
-          message.replaceAll("%NEW_VERSION%", newVersion);
-          message.replaceAll("%CANCEL_LABEL%", cancelLabel);
+          message = message.replaceAll("%OLD_VERSION%", oldVersion);
+          message = message.replaceAll("%NEW_VERSION%", newVersion);
+          message = message.replaceAll("%CANCEL_LABEL%", cancelLabel);
 
           return message;
 
@@ -120,8 +120,8 @@ runs:
           const newVersion = "${{ steps.h5p-version-check.outputs.current-version-formatted }}";
 
           let message = `${{ inputs.version-changed-message }}`;
-          message.replaceAll("%OLD_VERSION%", oldVersion);
-          message.replaceAll("%NEW_VERSION%", newVersion);
+          message = message.replaceAll("%OLD_VERSION%", oldVersion);
+          message = message.replaceAll("%NEW_VERSION%", newVersion);
 
           return message;
 
