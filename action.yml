@@ -79,7 +79,7 @@ runs:
 
     - name: Check if library is updated
       if: steps.check-label.outputs.hasLabel == false
-      uses: boyum/is-h5p-library-updated-action@v1
+      uses: boyum/is-h5p-library-updated-action@v1.1
       id: h5p-version-check
       with:
         working-directory: ${{ inputs.working-directory }}
