@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Check library version
-        uses: boyum/comment-h5p-library-version-action@v1
+        uses: boyum/comment-h5p-library-version-action@v2.1
 ```
 
 ### Options
