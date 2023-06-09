@@ -55,7 +55,7 @@ runs:
     - name: Find current PR number
       id: find-pr-number
       shell: bash
-      run: echo "number=${{ steps.find-pr-number.outputs.number }}" >> $GITHUB_OUTPUT
+      run: echo "number=$(steps.find-pr-number.outputs.number)" >> $GITHUB_OUTPUT
 
     - name: Find comment
       uses: peter-evans/find-comment@v2 # https://github.com/peter-evans/find-comment
@@ -75,7 +75,7 @@ runs:
     - name: PR has `${{ inputs.cancel-label }}` label
       id: check-label
       shell: bash
-      run: echo "has-label=${{ contains(github.event.pull_request.labels.*.name, inputs.cancel-label) == false }}" >> $GITHUB_OUTPUT
+      run: echo "has-label=$(contains(github.event.pull_request.labels.*.name, inputs.cancel-label) == false)" >> $GITHUB_OUTPUT
 
     - name: Check if library is updated
       if: steps.check-label.outputs.has-label == false
