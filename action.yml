@@ -55,7 +55,7 @@ runs:
     - name: Find current PR number
       id: find-pr-number
       shell: bash
-      run: echo "number=${{ steps.find-pr-number.outputs.number }}" >> $GITHUB_OUTPUT
+      run: echo "number=${{ github.event.number }}" >> $GITHUB_OUTPUT
 
     - name: Find comment
       uses: peter-evans/find-comment@v2 # https://github.com/peter-evans/find-comment
