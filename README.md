@@ -4,11 +4,11 @@ Comments whether or not the H5P library version was updated
 
 ## Usage
 
-This action needs to be triggered by `pull_request`, something like this:
+This action needs to be triggered by `pull_request_target`, something like this:
 
 ```yml
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened # PR opens
       - labeled # PR is labeled
