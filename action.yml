@@ -67,14 +67,8 @@ runs:
         type: delete
         comment_id: ${{ steps.find-comment.outputs.comment-id }}
 
-    - name: PR has `${{ inputs.cancel-label }}` label
-      uses: Dreamcodeio/pr-has-label-action@master # https://github.com/Dreamcodeio/does-pr-has-label
-      id: check-label
-      with:
-        label: ${{ inputs.cancel-label }}
-
     - name: Check if library is updated
-      if: steps.check-label.outputs.hasLabel == false
+      if: contains(github.event.pull_request.labels.*.name, inputs.cancel-label) == false
       uses: boyum/is-h5p-library-updated-action@v1.1
       id: h5p-version-check
       with:
