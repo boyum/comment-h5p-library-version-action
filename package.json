@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "format:fix": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "prettier-config": "github:boyum/prettier-config"
+  },
+  "prettier": "prettier-config"
+}
