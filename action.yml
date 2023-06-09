@@ -52,11 +52,16 @@ runs:
   using: composite
 
   steps:
+    - name: Find current PR number
+      id: find-pr-number
+      shell: bash
+      run: echo "number=${{ steps.find-pr-number.outputs.number }}" >> $GITHUB_OUTPUT
+
     - name: Find comment
       uses: peter-evans/find-comment@v2 # https://github.com/peter-evans/find-comment
       id: find-comment
       with:
-        issue-number: ${{ github.event.number }}
+        issue-number: ${{ steps.find-pr-number.outputs.number }}
         comment-author: github-actions[bot]
         body-includes: <!-- h5p-library-check-${{inputs.project-id}} -->
 
@@ -67,8 +72,13 @@ runs:
         type: delete
         comment_id: ${{ steps.find-comment.outputs.comment-id }}
 
+    - name: PR has `${{ inputs.cancel-label }}` label
+      id: check-label
+      shell: bash
+      run: echo "has-label=${{ contains(github.event.pull_request.labels.*.name, inputs.cancel-label) == false }}" >> $GITHUB_OUTPUT
+
     - name: Check if library is updated
-      if: contains(github.event.pull_request.labels.*.name, inputs.cancel-label) == false
+      if: steps.check-label.outputs.has-label == false
       uses: boyum/is-h5p-library-updated-action@v1.1
       id: h5p-version-check
       with:
