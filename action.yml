@@ -102,7 +102,7 @@ runs:
           return message;
 
     - name: "Create comment: Version change missing"
-      uses: peter-evans/create-or-update-comment@v2 # https://github.com/peter-evans/create-or-update-comment
+      uses: peter-evans/create-or-update-comment@v3 # https://github.com/peter-evans/create-or-update-comment
       if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead == 'false'
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number }}
@@ -126,7 +126,7 @@ runs:
           return message;
 
     - name: "Create comment: Version changed"
-      uses: peter-evans/create-or-update-comment@v2 # https://github.com/peter-evans/create-or-update-comment
+      uses: peter-evans/create-or-update-comment@v3 # https://github.com/peter-evans/create-or-update-comment
       if: steps.check-label.outputs.hasLabel == false && steps.h5p-version-check.outputs.is-ahead != 'false'
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number }}
