@@ -4,10 +4,19 @@ Comments whether or not the H5P library version was updated
 
 ## Usage
 
-This action needs to be triggered by `pull_request_target`, something like this:
+This action needs to be triggered by `pull_request` (or `pull_request_target` in public repositories), something like this:
 
 ```yml
 on:
+  # Private repositories
+  pull_request:
+    types:
+      - opened # PR opens
+      - labeled # PR is labeled
+      - unlabeled # A label is removed from PR
+      - synchronize # A commit is added - i.e. the PR's code is changed
+
+  # Public repositories
   pull_request_target:
     types:
       - opened # PR opens
