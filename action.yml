@@ -53,8 +53,9 @@ runs:
 
   steps:
     - name: Find current PR number
-      uses: jwalton/gh-find-current-pr@v1 # https://github.com/jwalton/gh-find-current-pr
       id: find-pr-number
+      shell: bash
+      run: echo "number=${{ github.event.number }}" >> $GITHUB_OUTPUT
 
     - name: Find comment
       uses: peter-evans/find-comment@v2 # https://github.com/peter-evans/find-comment
@@ -72,13 +73,12 @@ runs:
         comment_id: ${{ steps.find-comment.outputs.comment-id }}
 
     - name: PR has `${{ inputs.cancel-label }}` label
-      uses: Dreamcodeio/pr-has-label-action@master # https://github.com/Dreamcodeio/does-pr-has-label
       id: check-label
-      with:
-        label: ${{ inputs.cancel-label }}
+      shell: bash
+      run: echo "has-label=${{ contains(github.event.pull_request.labels.*.name, inputs.cancel-label) }}" >> $GITHUB_OUTPUT
 
-    - name: Check if library is updated
-      if: steps.check-label.outputs.hasLabel == false
+    - name: Check if library is updated 
+      if: steps.check-label.outputs.has-label == false
       uses: boyum/is-h5p-library-updated-action@v1.1
       id: h5p-version-check
       with:
