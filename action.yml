@@ -77,7 +77,7 @@ runs:
       shell: bash
       run: echo "has-label=${{ contains(github.event.pull_request.labels.*.name, inputs.cancel-label) }}" >> $GITHUB_OUTPUT
 
-    - name: Check if library is updated 
+    - name: Check if library is updated
       if: steps.check-label.outputs.has-label == false
       uses: boyum/is-h5p-library-updated-action@v1.1
       id: h5p-version-check
