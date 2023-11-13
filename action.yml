@@ -86,7 +86,7 @@ runs:
 
     - name: Format failure message
       id: format-failure-message
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         result-encoding: string
         script: |
@@ -112,7 +112,7 @@ runs:
 
     - name: Format success message
       id: format-success-message
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         result-encoding: string
         script: |
