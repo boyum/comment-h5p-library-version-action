@@ -57,7 +57,7 @@ runs:
       id: find-pr-number
 
     - name: Find comment
-      uses: peter-evans/find-comment@v2 # https://github.com/peter-evans/find-comment
+      uses: peter-evans/find-comment@v3 # https://github.com/peter-evans/find-comment
       id: find-comment
       with:
         issue-number: ${{ steps.find-pr-number.outputs.number || github.event.number }}
